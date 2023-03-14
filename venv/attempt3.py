@@ -26,8 +26,8 @@ with open('test.pickle', 'rb') as f:
 
 
 # print all the keys
-print('All keys: ', test_dict_reconstructed.keys())
+# print('All keys: ', test_dict_reconstructed.keys())
 
 # print all values - if you use this, it will end up showing all values in cleandata script too as it runs rest of script
-#print(test_dict_reconstructed.values())
+print(test_dict_reconstructed.values())
 

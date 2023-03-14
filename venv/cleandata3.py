@@ -4,13 +4,21 @@ import numpy as np
 import datetime
 import pickle
 import matplotlib.pyplot as plt
+import os
 
 
-# import data from other file
-from attempt3 import test_dict_reconstructed
 # load .mat file
-mat_data = sio.loadmat('/Users/rohanmangat/Downloads/5. Battery Data Set/1. BatteryAgingARC-FY08Q4/B0005.mat')
+all_data = sio.loadmat('/Users/rohanmangat/Downloads/5. Battery Data Set/1. BatteryAgingARC-FY08Q4/B0005.mat')
 
+# test = all_data[0]
+
+# print(test)
+
+# only extract data needed from file:
+mat_data = {}
+for key in all_data.keys():
+    if not key.startswith('__'):
+        mat_data[key] = all_data[key]
 
 def build_dictionaries(mess):
 
@@ -18,7 +26,12 @@ def build_dictionaries(mess):
 
     for i, element in enumerate(mess):
 
+        print('i:', i)
+        # print('element:', element)
+
         step = element[0][0]
+
+        print('step:', step)
 
         if step == 'discharge':
             discharge[str(i)] = {}
@@ -29,12 +42,13 @@ def build_dictionaries(mess):
             hour = int(element[2][0][3])
             minute = int(element[2][0][4])
             second = int(element[2][0][5])
-            millisecond = int((second % 1)*1000)
+            millisecond = int((second % 1) * 1000)
             date_time = datetime.datetime(year, month, day, hour, minute, second, millisecond)
 
             discharge[str(i)]["date_time"] = date_time.strftime("%d %b %Y, %H:%M:%S")
 
             data = element[3]
+
             discharge[str(i)]["voltage_battery"] = data[0][0][0][0].tolist()
             discharge[str(i)]["current_battery"] = data[0][0][1][0].tolist()
             discharge[str(i)]["temp_battery"] = data[0][0][2][0].tolist()
@@ -105,33 +119,23 @@ def build_dictionaries(mess):
             impedance[str(i)]["re"] = float(data[0][0][5][0][0])
             impedance[str(i)]["rct"] = float(data[0][0][6][0][0])
 
-        #print(discharge, charge, impedance)
+    # print(discharge, charge, impedance)
 
     return discharge, charge, impedance
 
 
-# saving function - using pickle:
-def save_pkl(dictionary, name):
-    with open(name + '.pickle', 'wb') as f:
-        pickle.dump(dictionary, f, protocol=pickle.HIGHEST_PROTOCOL)
+folder = '/Users/rohanmangat/Downloads/5. Battery Data Set/1. BatteryAgingARC-FY08Q4'
+filenames = [f for f in os.listdir(folder) if f.endswith('.mat')]
 
-# save all three dictionaries for charge, discharge and impedance:
+for filename in filenames:
+    name = filename.split('.mat')[0]
+    print(name)
+    struct = loadmat(folder + '/' + filename)
+    mess = struct[name][0][0][0][0]
+    # print('struct', struct)
 
-name = 'B0005'
+    discharge, charge, impedance = build_dictionaries(mess)
 
-discharge, charge, impedance = build_dictionaries(mat_data)
-save_pkl(discharge, name + '_discharge')
-save_pkl(charge, name + '_charge')
-save_pkl(impedance, name + '_impedance')
 
-with open('B0005_discharge.pickle','rb') as f:
-    discharge_data = pickle.load(f)
+# print(discharge)
 
-print(discharge_data)
-
-for cycle in discharge_data.keys():
-    plt.plot(cycle, impedance_data[cycle]["rct"], 'o')
-    plt.ylabel('Charge transfer resistance')
-    plt.xlabel('Cycle number')
-    plt.title('Battery B0005')
-plt.show()
