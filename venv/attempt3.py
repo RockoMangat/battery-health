@@ -2,7 +2,6 @@ import numpy as np
 import pickle
 import scipy.io as sio
 
-
 # load .mat file
 mat_data = sio.loadmat('/Users/rohanmangat/Downloads/5. Battery Data Set/1. BatteryAgingARC-FY08Q4/B0005.mat')
 

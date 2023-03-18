@@ -25,13 +25,13 @@ def build_dictionaries(mess):
 
     for i, element in enumerate(mess):
 
-        print('i:', i)
-        print('element:', element)
+        # print('i:', i)
+        # print('element:', element)
 
         # checks if the step will be charge, discharge, impedance
         step = element[0][0]
 
-        print('step:', step)
+        # print('step:', step)
 
         if step == 'discharge':
             discharge[str(i)] = {}
@@ -133,38 +133,18 @@ def build_dictionaries(mess):
 
 
 folder = '/Users/rohanmangat/Downloads/5. Battery Data Set/1. BatteryAgingARC-FY08Q4'
-filenames = [f for f in os.listdir(folder) if f.endswith('.mat')]
+filename = 'B0018.mat'
 
-for filename in filenames:
-    name = filename.split('.mat')[0]
-    print(name)
-    # loading file
-    struct = loadmat(folder + '/' + filename)
-    # selecting one of the battery datasets
-    mess = struct[name][0][0][0][0]
-    # print('struct', struct)
+name = filename.split('.mat')[0]
+print(name)
+# loading file
+struct = loadmat(folder + '/' + filename)
+# selecting one of the battery datasets
+mess = struct[name][0][0][0][0]
+# print('struct', struct)
 
-    # print(mess)
 
-    mess2 = struct[name][0][0][0]
-
-    mess3 = struct[name][0][0]
-    print(type(mess3))
-
-    mess4 = struct[name][0]
-
-    mess5 = struct[name]
-
-    mess_1 = struct[name][0][0][0][0][0]
-
-    mess_2 = struct[name][0][0][0][0][0][0]
-
-    mess_3 = struct[name][0][0][0][0][0][0][0]
-
-    mess_4 = struct[name][0][0][0][0][0][0][0][0]
-
-    # thus mess is the right one to use - it iterates over charge, discharge and impedance, any less/further deep in and get wrong values
-
-    discharge, charge, impedance = build_dictionaries(mess)
+discharge, charge, impedance = build_dictionaries(mess)
 
 # print(discharge)
+

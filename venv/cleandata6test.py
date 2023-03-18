@@ -1,3 +1,5 @@
+# Using chatgpt code to make three different files for code
+
 import scipy.io as sio
 from scipy.io import loadmat, whosmat
 import numpy as np
@@ -6,32 +8,22 @@ import pickle
 import matplotlib.pyplot as plt
 import os
 
-# load .mat file
-all_data = sio.loadmat('/Users/rohanmangat/Downloads/5. Battery Data Set/1. BatteryAgingARC-FY08Q4/B0005.mat')
 
-# test = all_data[0]
+def process_file(mess):
+    all_data = sio.loadmat(file_path)
+    mat_data = {}
+    for key in all_data.keys():
+        if not key.startswith('__'):
+            mat_data[key] = all_data[key]
 
-# print(test)
-
-# only extract data needed from file:
-mat_data = {}
-for key in all_data.keys():
-    if not key.startswith('__'):
-        mat_data[key] = all_data[key]
-
-
-def build_dictionaries(mess):
     discharge, charge, impedance = {}, {}, {}
 
-    for i, element in enumerate(mess):
+    xx = mat_data[key][0][0][0][0]
 
-        print('i:', i)
-        print('element:', element)
+    for i, element in enumerate(xx):
 
         # checks if the step will be charge, discharge, impedance
         step = element[0][0]
-
-        print('step:', step)
 
         if step == 'discharge':
             discharge[str(i)] = {}
@@ -48,12 +40,6 @@ def build_dictionaries(mess):
             discharge[str(i)]["date_time"] = date_time.strftime("%d %b %Y, %H:%M:%S")
 
             data = element[3]
-
-            test1 = data[0]
-            test2 = data[0][0]
-            test3 = data[0][0][0]
-            test4 = data[0][0][0][0]
-
 
             discharge[str(i)]["voltage_battery"] = data[0][0][0][0].tolist()
             discharge[str(i)]["current_battery"] = data[0][0][1][0].tolist()
@@ -132,39 +118,24 @@ def build_dictionaries(mess):
     return discharge, charge, impedance
 
 
+
+
+# get data from folder
 folder = '/Users/rohanmangat/Downloads/5. Battery Data Set/1. BatteryAgingARC-FY08Q4'
 filenames = [f for f in os.listdir(folder) if f.endswith('.mat')]
 
-for filename in filenames:
-    name = filename.split('.mat')[0]
-    print(name)
-    # loading file
-    struct = loadmat(folder + '/' + filename)
-    # selecting one of the battery datasets
-    mess = struct[name][0][0][0][0]
-    # print('struct', struct)
 
-    # print(mess)
+file_paths = [    '/Users/rohanmangat/Downloads/5. Battery Data Set/1. BatteryAgingARC-FY08Q4/B0005.mat',    '/Users/rohanmangat/Downloads/5. Battery Data Set/1. BatteryAgingARC-FY08Q4/B0007.mat',    '/Users/rohanmangat/Downloads/5. Battery Data Set/1. BatteryAgingARC-FY08Q4/B0018.mat']
 
-    mess2 = struct[name][0][0][0]
 
-    mess3 = struct[name][0][0]
-    print(type(mess3))
+# empty dictionaries for all of data
+all_discharge, all_charge, all_impedance = [], [], []
+for file_path in file_paths:
+    print(file_path)
+    discharge, charge, impedance = process_file(file_path)
+    all_discharge.append(discharge)
+    all_charge.append(charge)
+    all_impedance.append(impedance)
 
-    mess4 = struct[name][0]
-
-    mess5 = struct[name]
-
-    mess_1 = struct[name][0][0][0][0][0]
-
-    mess_2 = struct[name][0][0][0][0][0][0]
-
-    mess_3 = struct[name][0][0][0][0][0][0][0]
-
-    mess_4 = struct[name][0][0][0][0][0][0][0][0]
-
-    # thus mess is the right one to use - it iterates over charge, discharge and impedance, any less/further deep in and get wrong values
-
-    discharge, charge, impedance = build_dictionaries(mess)
 
 # print(discharge)

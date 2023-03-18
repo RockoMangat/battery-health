@@ -6,32 +6,13 @@ import pickle
 import matplotlib.pyplot as plt
 import os
 
-# load .mat file
-all_data = sio.loadmat('/Users/rohanmangat/Downloads/5. Battery Data Set/1. BatteryAgingARC-FY08Q4/B0005.mat')
-
-# test = all_data[0]
-
-# print(test)
-
-# only extract data needed from file:
-mat_data = {}
-for key in all_data.keys():
-    if not key.startswith('__'):
-        mat_data[key] = all_data[key]
-
-
+# function to transform data from matlab to python
 def build_dictionaries(mess):
     discharge, charge, impedance = {}, {}, {}
 
     for i, element in enumerate(mess):
 
-        print('i:', i)
-        print('element:', element)
-
-        # checks if the step will be charge, discharge, impedance
         step = element[0][0]
-
-        print('step:', step)
 
         if step == 'discharge':
             discharge[str(i)] = {}
@@ -49,20 +30,12 @@ def build_dictionaries(mess):
 
             data = element[3]
 
-            test1 = data[0]
-            test2 = data[0][0]
-            test3 = data[0][0][0]
-            test4 = data[0][0][0][0]
-
-
             discharge[str(i)]["voltage_battery"] = data[0][0][0][0].tolist()
             discharge[str(i)]["current_battery"] = data[0][0][1][0].tolist()
             discharge[str(i)]["temp_battery"] = data[0][0][2][0].tolist()
             discharge[str(i)]["current_load"] = data[0][0][3][0].tolist()
             discharge[str(i)]["voltage_load"] = data[0][0][4][0].tolist()
             discharge[str(i)]["time"] = data[0][0][5][0].tolist()
-            discharge[str(i)]["capacity"] = data[0][0][6][0].tolist()
-
 
         if step == 'charge':
             charge[str(i)] = {}
@@ -127,44 +100,21 @@ def build_dictionaries(mess):
             impedance[str(i)]["re"] = float(data[0][0][5][0][0])
             impedance[str(i)]["rct"] = float(data[0][0][6][0][0])
 
-    # print(discharge, charge, impedance)
-
     return discharge, charge, impedance
 
-
+# get data from folder
 folder = '/Users/rohanmangat/Downloads/5. Battery Data Set/1. BatteryAgingARC-FY08Q4'
 filenames = [f for f in os.listdir(folder) if f.endswith('.mat')]
 
+# loop through all files in folder
 for filename in filenames:
     name = filename.split('.mat')[0]
     print(name)
-    # loading file
     struct = loadmat(folder + '/' + filename)
-    # selecting one of the battery datasets
     mess = struct[name][0][0][0][0]
-    # print('struct', struct)
-
-    # print(mess)
-
-    mess2 = struct[name][0][0][0]
-
-    mess3 = struct[name][0][0]
-    print(type(mess3))
-
-    mess4 = struct[name][0]
-
-    mess5 = struct[name]
-
-    mess_1 = struct[name][0][0][0][0][0]
-
-    mess_2 = struct[name][0][0][0][0][0][0]
-
-    mess_3 = struct[name][0][0][0][0][0][0][0]
-
-    mess_4 = struct[name][0][0][0][0][0][0][0][0]
-
-    # thus mess is the right one to use - it iterates over charge, discharge and impedance, any less/further deep in and get wrong values
 
     discharge, charge, impedance = build_dictionaries(mess)
 
-# print(discharge)
+
+
+# print('test')
