@@ -27,11 +27,38 @@ for name in df_names:
     for num in dataset:
         # add in data from discharge dataset
         dfs[name] = pd.DataFrame.from_dict(all_discharge[num])
+        # checking dataframe to see if correct
         x = dfs[name]
 
         # rename the dataframe columns to be the number of discharge cycles
         dfs[name].columns = np.arange(len(dfs[name].columns))
 
+        # checking dataframe to see if correct
         x = dfs[name]
 
 
+
+        # create new empty lists which data will be added to from main dictionary, for graphs
+        charge_cycle = []
+        capacity = []
+
+        # loop to create graph:
+        for i, column in dfs[name].items():
+            print('i: ', i)
+
+            print('Column 8 (capacity): ', column[8])
+
+            charge_cycle.append(i)
+            capacity.append(column[8])
+
+
+        # range = np.arange(len(dfs[name].columns))
+        range = charge_cycle
+
+        ax = plt.plot(range, capacity, label=name)
+        plt.xlabel('Number of discharge cycles')
+        plt.ylabel('Capacity (Ah)')
+
+
+plt.legend()
+plt.show()
