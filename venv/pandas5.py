@@ -56,9 +56,11 @@ for name in df_names:
         range = charge_cycle
 
         ax = plt.plot(range, capacity, label=name)
-        plt.xlabel('Number of discharge cycles')
-        plt.ylabel('Capacity (Ah)')
 
+
+
+plt.xlabel('Number of discharge cycles')
+plt.ylabel('Capacity (Ah)')
 
 plt.legend()
 plt.show()
