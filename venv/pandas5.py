@@ -44,12 +44,14 @@ for name in df_names:
 
         # loop to create graph:
         for i, column in dfs[name].items():
-            print('i: ', i)
+            # added in the below to ensure it prints only when script run directly
+            if __name__ == '__main__':
+                print('i: ', i)
 
-            print('Column 8 (capacity): ', column[8])
+                print('Column 8 (capacity): ', column[8])
 
-            charge_cycle.append(i)
-            capacity.append(column[8])
+                charge_cycle.append(i)
+                capacity.append(column[8])
 
 
         # range = np.arange(len(dfs[name].columns))
@@ -57,10 +59,14 @@ for name in df_names:
 
         ax = plt.plot(range, capacity, label=name)
 
+# added in the below to ensure it prints only when script run directly
+if __name__ == '__main__':
+    plt.xlabel('Number of discharge cycles')
+    plt.ylabel('Capacity (Ah)')
+
+    plt.legend()
+    plt.show()
 
 
-plt.xlabel('Number of discharge cycles')
-plt.ylabel('Capacity (Ah)')
-
-plt.legend()
-plt.show()
+def load_df():
+    return dfs
