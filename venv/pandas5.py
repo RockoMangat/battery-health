@@ -65,7 +65,10 @@ if __name__ == '__main__':
     plt.ylabel('Capacity (Ah)')
 
     plt.legend()
+
+    plt.axhline(y=1.4, color='r', linestyle='-')
     plt.show()
+
 
 
 def load_df():
