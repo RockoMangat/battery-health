@@ -1,4 +1,5 @@
 # Using pandas to create dataframe for cleandata6test.py - the chatgpt file which creates one big dictionary containing the data for all three sets of battery data
+# SOH - capacitance data
 
 import pandas as pd
 import pickle
