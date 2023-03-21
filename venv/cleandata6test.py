@@ -125,7 +125,7 @@ folder = '/Users/rohanmangat/Downloads/5. Battery Data Set/1. BatteryAgingARC-FY
 filenames = [f for f in os.listdir(folder) if f.endswith('.mat')]
 
 
-file_paths = [    '/Users/rohanmangat/Downloads/5. Battery Data Set/1. BatteryAgingARC-FY08Q4/B0005.mat',    '/Users/rohanmangat/Downloads/5. Battery Data Set/1. BatteryAgingARC-FY08Q4/B0007.mat',    '/Users/rohanmangat/Downloads/5. Battery Data Set/1. BatteryAgingARC-FY08Q4/B0018.mat']
+file_paths = [    '/Users/rohanmangat/Downloads/5. Battery Data Set/1. BatteryAgingARC-FY08Q4/B0005.mat',    '/Users/rohanmangat/Downloads/5. Battery Data Set/1. BatteryAgingARC-FY08Q4/B0006.mat',    '/Users/rohanmangat/Downloads/5. Battery Data Set/1. BatteryAgingARC-FY08Q4/B0007.mat']
 
 
 # empty dictionaries for all of data

@@ -13,29 +13,21 @@ from cleandata6test import all_discharge, all_charge, all_impedance
 # number of dataset using - 0,1,2 for 3 battery datasets
 dataset = [0,1,2]
 
-# create a list of DataFrame names
-df_names = ['df1', 'df2', 'df3']
-
 # create an empty dictionary to store the DataFrames
 dfs = {}
 
-# loop through the list of DataFrame names
-for name in df_names:
-    # create an empty DataFrame with the name as the key
-    dfs[name] = pd.DataFrame()
+for num in dataset:
+    # create an empty DataFrame
+    dfs[num] = pd.DataFrame()
 
-    # set up dataframe for each discharge dataset
-    for num in dataset:
-        # add in data from discharge dataset
-        dfs[name] = pd.DataFrame.from_dict(all_charge[num])
-        # checking dataframe to see if correct
-        x = dfs[name]
+    # add in data from charge dataset
+    dfs[num] = pd.DataFrame.from_dict(all_charge[num])
 
-        # rename the dataframe columns to be the number of discharge cycles
-        dfs[name].columns = np.arange(len(dfs[name].columns))
+    # rename the dataframe columns to be the number of charge cycles
+    dfs[num].columns = np.arange(len(dfs[num].columns))
 
-        # checking dataframe to see if correct
-        x = dfs[name]
+    # checking dataframe to see if correct
+    x = dfs[num]
 
 
 def load_df():

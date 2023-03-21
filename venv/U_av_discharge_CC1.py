@@ -6,19 +6,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # import dataframes
-from pandas5 import load_df
+from pandas5v2 import load_df
 dfs = load_df()
 
 # plt.close()
 
-# list of DataFrame names
-df_names = ['df1', 'df2', 'df3']
+# number of dataset using - 0,1,2 for 3 battery datasets
+dataset = [0,1,2]
 
 # loop through the list of DataFrame names
 # for name in df_names:
 
 # calling first dataframe
-a = df_names[0]
+a = dataset[0]
 x = dfs[a]
 print(x)
 

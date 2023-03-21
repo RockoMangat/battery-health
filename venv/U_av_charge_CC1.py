@@ -11,14 +11,12 @@ dfs = load_df()
 
 # plt.close()
 
-# list of DataFrame names
-df_names = ['df1', 'df2', 'df3']
+# number of dataset using - 0,1,2 for 3 battery datasets
+dataset = [0,1,2]
 
-# loop through the list of DataFrame names
-# for name in df_names:
 
-# calling first dataframe
-a = df_names[0]
+# calling first dataframe/dataset
+a = dataset[0]
 x = dfs[a]
 print(x)
 
