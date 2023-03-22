@@ -34,7 +34,7 @@ soh = []
 fullcapacity = 2
 
 # loop to create graph:
-for i, column in y.items():
+for i, column in x.items():
     # added in the below to ensure it prints only when script run directly
     if __name__ == '__main__':
         print('i: ', i)
@@ -52,6 +52,7 @@ for i, column in y.items():
 range = charge_cycle
 
 print(soh)
+print(sum(soh))
 
 ax = plt.plot(range,soh)
 
