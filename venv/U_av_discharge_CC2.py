@@ -1,4 +1,5 @@
 # Finding average voltage of CC DISCHARGING process
+# second version - removing all values after min value
 
 import pandas as pd
 import pickle
@@ -38,8 +39,27 @@ for i, column in x.items():
 
     discharge_CC_voltage.append(column[2])
 
+    # find min value
+    minval = min(discharge_CC_voltage[i])
+    # min value index
+    minindex = discharge_CC_voltage[i].index(minval)
+    # remove all values after minvalue
+    del discharge_CC_voltage[i][minindex+1:]
+    del time[i][minindex+1:]
+
+
     # plot graph
     plt.plot(time[i], discharge_CC_voltage[i])
+
+    print(minval)
+
+
+
+# print('test1 time: ', time[0])
+# print('test1 voltage: ', discharge_CC_voltage[0])
+# print('test2 time', time[150])
+# print('test2 voltage', discharge_CC_voltage[150])
+
 
 
 

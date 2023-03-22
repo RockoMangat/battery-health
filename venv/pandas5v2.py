@@ -1,5 +1,5 @@
 # Using pandas to create dataframe for cleandata6test.py - the chatgpt file which creates one big dictionary containing the data for all three sets of battery data
-# SOH - capacitance data
+# SOH - capacity data (discharge)
 # USE THIS FILE NOW - FIXES ISSUE FROM BEFORE
 
 import pandas as pd

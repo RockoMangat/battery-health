@@ -1,4 +1,5 @@
 # finding the SOH values from capacity data:
+# uses data from current and time to find capacity
 
 import pandas as pd
 import pickle
