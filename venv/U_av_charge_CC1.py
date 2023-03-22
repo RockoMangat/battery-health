@@ -38,12 +38,19 @@ for i, column in x.items():
 
     charge_CC_voltage.append(column[2])
 
+
+    # apply below if above 4.2V and remove these values from charge_CC_voltage and time lists
+    result = next(k for k, value in enumerate(charge_CC_voltage[i]) if value > 4.2 or value < 3)
+    del charge_CC_voltage[i][result]
+    del time[i][result]
+
     # plot graph
     plt.plot(time[i], charge_CC_voltage[i])
-
 
 
 plt.plot(time[i], charge_CC_voltage[i])
 plt.xlabel('Time (s)')
 plt.ylabel('Average voltage of CC charge process (V)')
+plt.xlim(0,3500)
+plt.ylim(3.4,4.3)
 plt.show()

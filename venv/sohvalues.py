@@ -34,7 +34,7 @@ soh = []
 fullcapacity = 2
 
 # loop to create graph:
-for i, column in x.items():
+for i, column in z.items():
     # added in the below to ensure it prints only when script run directly
     if __name__ == '__main__':
         print('i: ', i)
