@@ -35,7 +35,7 @@ truecapacity = {}
 time = []
 ab = []
 
-for i, column in z.items():
+for i, column in x.items():
     # added in the below to ensure it prints only when script run directly
     if __name__ == '__main__':
         # cycle number
@@ -93,12 +93,12 @@ for i, column in z.items():
 # apply below if above 101% SOH
 result = next(k for k, value in enumerate(ab) if value > 1.1)
 print('index is: ', result)
-print('value is: ',ab[result])
-print('length of ab before: ',len(ab))
+print('value is: ', ab[result])
+print('length of ab before: ', len(ab))
 del ab[result]
 del charge_cycle[result]
-print('length of ab after: ',len(ab))
-print('length of charge cycle after: ',len(charge_cycle))
+print('length of ab after: ', len(ab))
+print('length of charge cycle after: ', len(charge_cycle))
 
 print(ab)
 
