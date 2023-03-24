@@ -73,26 +73,11 @@ for i, column in x.items():
 
     # plot of smoothed data
     plt.plot(discharge_CC_voltage[i][1:], inc_cap_smoothed)
-    # plt.show()
     print('space')
 
 
-
-
-
-
-
-
-
-    # incremental capacity values:
-    # inc_cap.append(capacity[i][0] / dv[i])
-
-
-    # plot graph
-    # plt.plot(discharge_CC_voltage[i], inc_cap[i])
-
 # plt.plot(discharge_CC_voltage[i], inc_cap[i])
-# plt.xlabel('Time (s)')
-# plt.ylabel('Average voltage of CC discharge process (V)')
+plt.xlabel('Terminal Voltage (V)')
+plt.ylabel('Incremental Capacity (Ah/V)')
 plt.show()
 
