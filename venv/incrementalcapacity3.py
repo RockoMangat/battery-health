@@ -1,5 +1,6 @@
 # Incremental capacity graphs:
 # using discharge data
+#  same as incrementalcapacity2 but certain plots only
 
 import pandas as pd
 import pickle
@@ -28,16 +29,19 @@ t0 = 0
 t1 = 0
 dt = 0
 
-# List of cycles to loop over
-cycles_to_loop = np.linspace(0, 167, 15)
-cycles_to_loop = np.round(cycles_to_loop)
+# List of cycles to loop over and creating n variable to iterate with
+cycles_to_loop = [0, 12, 24, 36, 48, 61, 72, 84, 95, 107, 119, 131, 143, 155, 167]
+n = -1
 
 # loop to create graph:
 for i, column in x.items():
     # Check if cycle is in the list of cycles to loop over
-    # if i in cycles_to_loop:
+    if i in cycles_to_loop:
         # i is the discharge cycle number
         print('i (cycle no.) : ', i)
+
+        # Update variable n to show number of cycles
+        n = n + 1
 
         # initialize dictionary for current cycle
         inc_cap[i] = {}
@@ -74,16 +78,13 @@ for i, column in x.items():
         print((list(inc_cap[0].values())))
         # plt.plot(discharge_CC_voltage[i][val], inc_cap[i][val])
 
-        # plot of raw, noisy data
-        # plt.plot(discharge_CC_voltage[i][1:], list(inc_cap[i].values()), label=f"Cycle {i}")
 
-        # plot of smoothed data for all cycles
-        ax = plt.plot(discharge_CC_voltage[i][1:], inc_cap_smoothed, label = i)
+        # plot of smoothed data for chosen cycles
+        print(discharge_CC_voltage)
+        ax = plt.plot(discharge_CC_voltage[n][1:], inc_cap_smoothed, label = i)
         plt.legend()
         print('space')
 
-        # plot of smoothed data for limited cycles
-        # plt.plot(discharge_CC_voltage[cycles_to_loop][1:], inc_cap_smoothed)
 
 
 
