@@ -9,6 +9,7 @@ import numpy as np
 from pandas6 import load_df
 dfs = load_df()
 
+# Nearest value function
 def find_nearest(array, value):
     array = np.asarray(array)
     idx = (np.abs(array - value)).argmin()
