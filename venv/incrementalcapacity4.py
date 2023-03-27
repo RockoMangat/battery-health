@@ -1,6 +1,6 @@
 # Incremental capacity graphs:
 # using discharge data
-#  same as incrementalcapacity3 but finding values for du1 and du2
+#  same as incrementalcapacity3, greater sigma and finding values for du1 and du2
 
 import pandas as pd
 import pickle
