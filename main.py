@@ -1,18 +1,26 @@
-import pickle
+# import pickle
+#
+# # A test object
+# test_dict = {"Hello": "World!"}
+#
+# # Serialization
+# with open("test.pickle", "wb") as outfile:
+# # "wb" argument opens the file in binary mode
+#     pickle.dump(test_dict, outfile)
+# print("Written object", test_dict)
+#
+# # Deserialization
+# with open("test.pickle", "rb") as infile:
+#     test_dict_reconstructed = pickle.load(infile)
+# print("Reconstructed object", test_dict_reconstructed)
+#
+# if test_dict == test_dict_reconstructed:
+#     print("Reconstruction success")
 
-# A test object
-test_dict = {"Hello": "World!"}
 
-# Serialization
-with open("test.pickle", "wb") as outfile:
-# "wb" argument opens the file in binary mode
-    pickle.dump(test_dict, outfile)
-print("Written object", test_dict)
+# Get values from other scripts:
 
-# Deserialization
-with open("test.pickle", "rb") as infile:
-    test_dict_reconstructed = pickle.load(infile)
-print("Reconstructed object", test_dict_reconstructed)
+from sohvalues import deltau_av
 
-if test_dict == test_dict_reconstructed:
-    print("Reconstruction success")
+
+

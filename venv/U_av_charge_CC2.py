@@ -1,5 +1,5 @@
 # Finding average voltage of CC CHARGING process
-# USE SECOND VERSION!
+# With normalisation graph and elimintating anomalies which affect graph
 
 import pandas as pd
 import pickle
@@ -22,7 +22,7 @@ dataset = [0,1,2]
 
 
 # calling first dataframe/dataset
-a = dataset[1]
+a = dataset[0]
 x = dfs[a]
 print(x)
 
@@ -38,6 +38,9 @@ fixedtime = []
 for i, column in x.items():
     # i is the discharge cycle number
     print('i: ', i)
+    #
+    # if i == 33:
+    #     continue
 
     # print('Column 7 (time): ', column[7])
 
@@ -69,7 +72,7 @@ for i, column in x.items():
 
 
     # time taken to charge: find index of the first value which reaches 4.2V
-    result = next(k for k, value in enumerate(charge_CC_voltage[i]) if value > 4.2)
+    result = next(k for k, value in enumerate(charge_CC_voltage[i]) if value > 4.2 and value < 8.0)
     print(charge_CC_voltage[i][result])
 
     # print('Time taken to reach full charge: ', time[i][result])
@@ -118,8 +121,26 @@ plt.ylim(3.4, 4.3)
 # Create an instance of the scaler
 scaler = MinMaxScaler()
 
+
+
+# Cycle range
+cc = list(range(0, 170))
+
+# deleting values which are affecting normalised data - any time values below 1000s
+for value in chargetime:
+    print(value)
+    if value < 1000:
+        val = chargetime.index(value)
+        # idx.append(chargetime.index(value))
+        print('aff')
+        del chargetime[val]
+        del cc[val]
+
+
+
 # Create numpy array of data
 chargetime_np = np.array(chargetime)
+
 
 # Reshape the array to have two dimensions
 chargetime_np = chargetime_np.reshape(-1, 1)
@@ -127,13 +148,12 @@ chargetime_np = chargetime_np.reshape(-1, 1)
 # Normalize the data
 normalized_data = scaler.fit_transform(chargetime_np)
 
-# Cycle range
-cc = list(range(0, 170))
+
 
 # Convert back to list, to plot
 nd = normalized_data.tolist()
 plt.figure(2)
 plt.plot(cc, nd)
 plt.xlabel('Cycle')
-plt.ylabel('Normalised feature 3')
+plt.ylabel('Normalised Feature 3')
 plt.show()
