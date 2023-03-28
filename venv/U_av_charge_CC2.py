@@ -72,7 +72,7 @@ for i, column in x.items():
 
 
     # time taken to charge: find index of the first value which reaches 4.2V
-    result = next(k for k, value in enumerate(charge_CC_voltage[i]) if value > 4.2 and value < 8.0)
+    result = next(k for k, value in enumerate(charge_CC_voltage[i]) if 4.2 < value < 8.0)
     print(charge_CC_voltage[i][result])
 
     # print('Time taken to reach full charge: ', time[i][result])
