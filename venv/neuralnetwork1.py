@@ -5,6 +5,23 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import sklearn
 
+from sklearn.model_selection import train_test_split
+
+# import dataframes
+from pandas5v2 import load_df
+dfs = load_df()
+
+X = np.arange(20).reshape(-1, 1)
+Y = np.array([5, 12, 11, 19, 30, 29, 23, 40, 51, 54, 74, 62, 68, 73, 89, 84, 89, 101, 99, 106])
+
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.33, random_state=42)
+
+X_train.shape, X_test.shape, Y_train.shape, Y_test.shape
+
+
+
+
+
 
 class MyModule (nn.Module):
     # Initialize the parameter
@@ -21,7 +38,8 @@ class MyModule (nn.Module):
         return pred
 
 # Instantiate the custom module
-my_module = MyModule(num_inputs=6*3, num_outputs=10, hidden_size=20)
+# 6 inputs (from the features), one output (SOH) and hidden size is 19 neurons
+my_module = MyModule(num_inputs=6, num_outputs=1, hidden_size=19)
 
 # Construct our loss function and an Optimizer. The call to model.parameters()
 # in the SGD constructor will contain the learnable parameters of the two

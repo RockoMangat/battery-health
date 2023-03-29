@@ -37,8 +37,8 @@ fullcapacity = 2
 
 # List of cycles to loop over and creating n variable to iterate with
 # cycles_to_loop = [0, 12, 24, 36, 48, 61, 72, 84, 95, 107, 119, 131, 143, 155, 167]
-cycles_to_loop = [0, 72, 84, 95, 107, 119, 131, 143, 155, 167]
-# cycles_to_loop = [0, 1, 2, 3, 10, 20, 30, 40, 50, 60, 80, 95, 107, 119, 131, 143, 155, 167]
+# cycles_to_loop = [0, 72, 84, 95, 107, 119, 131, 143, 155, 167]
+cycles_to_loop = [0, 1, 2, 3, 10, 20, 30, 40, 50, 60, 80, 95, 107, 119, 131, 143, 155, 167]
 # cycles_to_loop = [0, 1, 9, 48, 88, 128, 168]
 n = -1
 
@@ -94,9 +94,10 @@ for i, column in x.items():
 
 
         # plot of smoothed data for chosen cycles
-        print(discharge_CC_voltage)
-        # ax = plt.plot(discharge_CC_voltage[n][1:], inc_cap_smoothed, label = i)
-        ax = plt.plot(discharge_CC_voltage[n][1:], inc_cap_smoothed, label=round(soh[n],2))
+        # print(discharge_CC_voltage)
+        ax = plt.plot(discharge_CC_voltage[n][1:], inc_cap_smoothed, label = i)
+        # ax = plt.plot(discharge_CC_voltage[n][1:], inc_cap_smoothed, label=round(soh[n],2))
+
         plt.legend()
         print('space')
 

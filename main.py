@@ -1,26 +1,26 @@
-# import pickle
-#
-# # A test object
-# test_dict = {"Hello": "World!"}
-#
-# # Serialization
-# with open("test.pickle", "wb") as outfile:
-# # "wb" argument opens the file in binary mode
-#     pickle.dump(test_dict, outfile)
-# print("Written object", test_dict)
-#
-# # Deserialization
-# with open("test.pickle", "rb") as infile:
-#     test_dict_reconstructed = pickle.load(infile)
-# print("Reconstructed object", test_dict_reconstructed)
-#
-# if test_dict == test_dict_reconstructed:
-#     print("Reconstruction success")
-
-
 # Get values from other scripts:
+datasetno = 0
 
-from sohvalues import deltau_av
+# ------------------ Get the av charge voltage ------------------ #
+#
+# from U_av_charge_CC3 import charge_data
+# # select dataset: 0, 1 or 2
+# result = charge_data(datasetno)
+#
+#
+# av_volt_charge = result[0]
+# charge_time_normalised = result[1]
+# volt_fixedtime = result[2]
+# cycles = result[3]
+# print('hello')
+
+# ------------------ Get the av discharge voltage ------------------ #
+#
+from U_av_discharge_CC2 import discharge_data
+
+result2 = discharge_data(datasetno)
 
 
-
+av_volt_discharge = result2[0]
+cycles2 = result2[1]
+print('hello')
