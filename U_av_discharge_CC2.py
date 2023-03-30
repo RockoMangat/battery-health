@@ -20,7 +20,7 @@ def discharge_data(dataset):
 
     # create new empty lists which data will be added to from main dictionary, for graphs
     time = []
-    discharge_CC_voltage = []
+    discharge_CC_voltage1 = []
     av = []
 
     # loop to create graph:
@@ -34,34 +34,34 @@ def discharge_data(dataset):
 
         time.append(column[7])
 
-        discharge_CC_voltage.append(column[2])
+        discharge_CC_voltage1.append(column[2])
 
         # find min value
-        minval = min(discharge_CC_voltage[i])
+        minval = min(discharge_CC_voltage1[i])
         # print(minval)
         # min value index
-        minindex = discharge_CC_voltage[i].index(minval)
+        minindex = discharge_CC_voltage1[i].index(minval)
         # remove all values after minvalue
-        del discharge_CC_voltage[i][minindex+1:]
+        del discharge_CC_voltage1[i][minindex+1:]
         del time[i][minindex+1:]
 
         # finding the average voltage for each line
-        nu = discharge_CC_voltage[i]
+        nu = discharge_CC_voltage1[i]
 
         # checking if updated and old values removed
-        test = discharge_CC_voltage[i]
+        test = discharge_CC_voltage1[i]
         # average voltage for current cycle
         av.append(sum(nu) / len(nu))
         print('Average voltage for current cycle: ', av[i])
 
 
         # plot graph
-        plt.plot(time[i], discharge_CC_voltage[i])
+        plt.plot(time[i], discharge_CC_voltage1[i])
 
         print('tester')
 
 
-    plt.plot(time[i], discharge_CC_voltage[i])
+    plt.plot(time[i], discharge_CC_voltage1[i])
     plt.xlabel('Time (s)')
     plt.ylabel('Average voltage of CC discharge process (V)')
     plt.show()

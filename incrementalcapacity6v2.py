@@ -1,6 +1,7 @@
 # Incremental capacity graphs:
 # using discharge data
 #  same as incrementalcapacity4, but finding delta_u1 and delta_u2 for all cycles and implementing normalisation too
+# new ICA features - peak values
 
 import pandas as pd
 import pickle
@@ -19,18 +20,25 @@ def find_nearest(array, value):
     idx = (np.abs(array - value)).argmin()
     return array[idx]
 
-
 def ica_data(dataset):
+    # import dataframes
+    from pandas5v2 import load_df
+    dfs = load_df()
 
     x = dfs[dataset]
 
     # create new empty lists which data will be added to from main dictionary, for graphs
     discharge_CC_voltage = []
+    discharge_CC_voltage22 = []
+
     dv = []
     inc_cap = {}
     inc_cap_smoothed ={}
     maxica = []
     maxica_filtered = []
+    idx = []
+    index = []
+    peakvolt = []
 
     # initialise variables
     t0 = 0
@@ -42,6 +50,8 @@ def ica_data(dataset):
     soh = []
     fullcapacity = 2
 
+    # List of cycles to loop over and creating n variable to iterate with
+    # cycles_to_loop = [0, 72, 84, 95, 107, 119, 131, 143, 155, 167]
     # number of charge cycles:
     no_cc = len(x.columns)
 
@@ -70,6 +80,9 @@ def ica_data(dataset):
 
             discharge_CC_voltage.append(column[2])
 
+            # taking voltages from second value onwards - to use with ICA
+            discharge_CC_voltage22.append(column[2][1:])
+
             capacity.append(column[8])
 
             soh.append(capacity[n][0] / fullcapacity)
@@ -77,7 +90,8 @@ def ica_data(dataset):
 
 
             for val in range(len(column[3])):
-                print(len(column[3]))
+
+                aaaa = np.array(column[7])
                 # time data when val=0
                 if val == 0:
                     dt = 0
@@ -85,9 +99,8 @@ def ica_data(dataset):
                 else:
                     # time data
                     t0 = column[7][val - 1]
-                    print('val: ', val)
-                    print('time values: ', column[7])
-                    print('t0: ', t0)
+                    print(range(len(column[3])))
+                    print(val)
                     t1 = column[7][val]
                     dt = t1 - t0
 
@@ -109,8 +122,20 @@ def ica_data(dataset):
             # ax = plt.plot(discharge_CC_voltage[n][1:], inc_cap_smoothed[n], label=round(soh[n],2))
 
 
+
             # max ICA for current cycle:
             maxica.append(max(inc_cap_smoothed[n]))
+
+            # get index of max ICA
+            idx = np.where(inc_cap_smoothed[n] == maxica[n])[0]
+            index.append(idx[0])
+
+            peakvolt.append(discharge_CC_voltage22[n][index[n]])
+
+
+            p = inc_cap_smoothed[n]
+            q = np.array(discharge_CC_voltage22[n])
+
             print('n: ', n)
 
             # plots graph only if it has an ICA lower than the first cycle
@@ -144,6 +169,7 @@ def ica_data(dataset):
     plt.xlabel('Terminal Voltage (V)')
     plt.ylabel('Incremental Capacity (Ah/V)')
     plt.legend()
+    # plt.show()
 
 
     # find max ICA value and terminal voltage for second cycle:
@@ -153,14 +179,18 @@ def ica_data(dataset):
     delta_u1 = []
     delta_u2 = []
 
+    # no = list(range(0, 10))
 
     # Loop through cycles to get centres for each cycle
     for cycle in final_cycles:
         # skip past cycle 0 - we want difference in voltage between centre of cycle 0 and all other cycles
         if cycle == 0:
             continue
-
         # index of max ICA within that cycle
+        inc_cap_smoothedtest = inc_cap_smoothed[cycle]
+        print(inc_cap_smoothed[cycle])
+        print(maxica[cycle])
+        # print(index(maxica[cycle])
         maxica_index0 = next((i for i, j in enumerate(inc_cap_smoothed[cycle]) if j == maxica[cycle]), None)
         centre = discharge_CC_voltage[cycle][maxica_index0]
         print('Terminal Voltage 0: ', centre)
@@ -181,9 +211,16 @@ def ica_data(dataset):
         maxica_index1 = next((i for i, j in enumerate(inc_cap_smoothed[0]) if j == nearest1), None)
         maxica_index2 = next((i for i, j in enumerate(inc_cap_smoothed[0]) if j == nearest2), None)
 
+        # print('Index 1: ', maxica_index1)
+        # print('Index 2: ', maxica_index2)
+
+        # print('ICA Value 1: ', inc_cap_smoothed[0][maxica_index1])
+        # print('ICA Value 2: ', inc_cap_smoothed[0][maxica_index2])
 
         t_voltage1 = discharge_CC_voltage[0][maxica_index1]
         t_voltage2 = discharge_CC_voltage[0][maxica_index2]
+        # print('Terminal Voltage 1: ', discharge_CC_voltage[0][maxica_index1])
+        # print('Terminal Voltage 2: ', discharge_CC_voltage[0][maxica_index2])
 
         # Final differences
         delta_u1.append( abs((centre - t_voltage1)) )
@@ -234,12 +271,15 @@ def ica_data(dataset):
     # plt.show()
 
 
-    # ----------for all cycles-------------
-    # remove anamoly - index = 60
-    del maxica[60]
-    del cycles_to_loop[60]
+
 
     # instead normalise the peaks with maxica:
+    # remove anamoly - index = 60
+    del maxica[60]
+    del peakvolt[60]
+    del cycles_to_loop[60]
+
+
     maxica_np = np.array(maxica)
 
     # Reshape the array to have two dimensions
@@ -250,33 +290,38 @@ def ica_data(dataset):
 
     # Convert back to list, to plot
     nd3 = normalized_data3.tolist()
-    plt.figure(5)
+    plt.figure(4)
     plt.plot(cycles_to_loop, nd3)
     plt.xlabel('Cycle')
     plt.ylabel('Normalised Feature peak test')
+    # plt.show()
+
+
+
+
+
+
+    # ------------------------------ for peak voltage:
+
+    peakvolt_np = np.array(peakvolt)
+
+    # Reshape the array to have two dimensions
+    peakvolt_np = peakvolt_np.reshape(-1, 1)
+
+    # normalise:
+    normalized_data4 = scaler.fit_transform(peakvolt_np)
+
+    # Convert back to list, to plot
+    nd4 = normalized_data4.tolist()
+    plt.figure(5)
+    plt.plot(cycles_to_loop, nd4)
+    plt.xlabel('Cycle')
+    plt.ylabel('Normalised Feature voltage peak test')
     plt.show()
 
 
 
-    # ---------------------------
 
-    # instead normalise the peaks with maxica:
-    # maxica_np = np.array(maxica_filtered)
-    #
-    # # Reshape the array to have two dimensions
-    # maxica_np = maxica_np.reshape(-1, 1)
-    #
-    # # normalise:
-    # normalized_data3 = scaler.fit_transform(maxica_np)
-    #
-    # # Convert back to list, to plot
-    # nd3 = normalized_data3.tolist()
-    # plt.figure(4)
-    # plt.plot(final_cycles, nd3)
-    # plt.xlabel('Cycle')
-    # plt.ylabel('Normalised Feature peak test')
-    # plt.show()
-
-    return nd3, cycles_to_loop
+    return nd3, nd4, cycles_to_loop
 
 
