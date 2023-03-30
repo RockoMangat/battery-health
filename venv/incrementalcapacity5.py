@@ -105,7 +105,7 @@ for i, column in x.items():
 
         # plot of smoothed data for chosen cycles
         # print(discharge_CC_voltage)
-        ax = plt.plot(discharge_CC_voltage[n][1:], inc_cap_smoothed[n], label=round(soh[n],2))
+        # ax = plt.plot(discharge_CC_voltage[n][1:], inc_cap_smoothed[n], label=round(soh[n],2))
 
 
 
@@ -115,21 +115,21 @@ for i, column in x.items():
 
         # plots graph only if it has an ICA lower than the first cycle
 
-        # if n == 0:
-        #     ax = plt.plot(discharge_CC_voltage[n][1:], inc_cap_smoothed[n], label=round(soh[n],2))
-        #     plt.legend()
-        #     print('space')
-        #     continue
-        #
-        #
-        # if maxica[n] > maxica[0]:
-        #     continue
-        #
-        # else:
-        #     ax = plt.plot(discharge_CC_voltage[n][1:], inc_cap_smoothed[n], label=round(soh[n], 2))
-        #     plt.legend()
-        #
-        #     final_cycles.append(n)
+        if n == 0:
+            ax = plt.plot(discharge_CC_voltage[n][1:], inc_cap_smoothed[n], label=round(soh[n],2))
+            plt.legend()
+            print('space')
+            continue
+
+
+        if maxica[n] > maxica[0]:
+            continue
+
+        else:
+            ax = plt.plot(discharge_CC_voltage[n][1:], inc_cap_smoothed[n], label=round(soh[n], 2))
+            plt.legend()
+
+            final_cycles.append(n)
 
 
 

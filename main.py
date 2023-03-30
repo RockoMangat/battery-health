@@ -16,11 +16,23 @@ datasetno = 0
 
 # ------------------ Get the av discharge voltage ------------------ #
 #
-from U_av_discharge_CC2 import discharge_data
+# from U_av_discharge_CC2 import discharge_data
+#
+# result2 = discharge_data(datasetno)
+#
+#
+# av_volt_discharge = result2[0]
+# cycles2 = result2[1]
+# print('hello')
 
-result2 = discharge_data(datasetno)
 
+# ------------------ Get the ICA data ------------------ #
+#
+from incrementalcapacity6 import ica_data
 
-av_volt_discharge = result2[0]
-cycles2 = result2[1]
+result3 = ica_data(datasetno)
+
+maxica = result3[0]
+cycles3 = result3[1]
 print('hello')
+
