@@ -317,7 +317,12 @@ def ica_data(dataset):
     plt.plot(cycles_to_loop, nd4)
     plt.xlabel('Cycle')
     plt.ylabel('Normalised Feature voltage peak test')
+
+    # plt.figure(6)
+    # plt.plot(q,p)
     plt.show()
+
+
 
 
 

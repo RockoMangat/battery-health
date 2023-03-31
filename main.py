@@ -4,6 +4,7 @@ import pandas as pd
 from U_av_charge_CC3 import charge_data
 from U_av_discharge_CC2 import discharge_data
 from incrementalcapacity6v2 import ica_data
+from neuralnetwork1 import nn1
 
 # select dataset: 0, 1 or 2
 datasetno = 0
@@ -24,7 +25,8 @@ print('hello')
 result2 = ica_data(datasetno)
 
 maxica = result2[0]
-cycles2 = result2[1]
+peakvoltage = result2[1]
+cycles2 = result2[2]
 print('hello')
 
 #
@@ -39,14 +41,28 @@ print('hello')
 
 
 # ------------------ Make dataframe ------------------ #
-df1 = pd.DataFrame(list(zip(av_volt_charge, charge_time_normalised, volt_fixedtime)), index=cycles1)
+# df1 = pd.DataFrame(list(zip(av_volt_charge, charge_time_normalised, volt_fixedtime)), index=cycles1)
+df1 = pd.DataFrame(list(zip(av_volt_charge, charge_time_normalised, volt_fixedtime)))
 
-df2 = pd.DataFrame(list(zip(maxica)), index=cycles2)
+df1.columns = ['Av volt charge', 'Charge time', 'Voltage fixedtime']
 
-df3 = pd.DataFrame(list(zip(av_volt_discharge)), index=cycles3)
+# df2 = pd.DataFrame(list(zip(maxica, peakvoltage)), index=cycles2)
+df2 = pd.DataFrame(list(zip(maxica, peakvoltage)))
+df2.columns = ['Max ICA', 'Peak voltage']
 
+# df3 = pd.DataFrame(list(zip(av_volt_discharge)), index=cycles3)
+df3 = pd.DataFrame(list(zip(av_volt_discharge)))
+df3.columns = ['Av volt discharge']
 
 frames = [df1, df2, df3]
-combinedframe = pd.concat(frames)
+dfcomb = pd.concat(frames, axis=1)
+
+# X = dfcomb.drop('target_column', axis=1)
+# Y = dfcomb['target_column']
+
+# Neural network tests:
+# test1 = nn1(X, Y)
+
+
 
 print('hello')
