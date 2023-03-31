@@ -2,8 +2,7 @@
 # uses data from current and time to find capacity
 # FOR CHARGING DATA
 
-import pandas as pd
-import pickle
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -14,26 +13,28 @@ dfs_dis = load_df()
 from pandas6 import load_df
 dfs_cha = load_df()
 # ----------------------------------- #
-
-# choosing charge
-dfs = dfs_cha
-# choosing first dataset - B0005
-x = dfs[0]
+def sohcharge1():
 
 
-# create new empty lists which data will be added to from main dictionary, for graphs
-charge_cycle = []
-capacity = []
-soh = []
-fullcapacity = 2
+    # choosing charge
+    dfs = dfs_cha
+    # choosing first dataset - B0005
+    x = dfs[0]
 
-truecapacity = {}
-time = []
-ab = []
 
-for i, column in x.items():
-    # added in the below to ensure it prints only when script run directly
-    if __name__ == '__main__':
+    # create new empty lists which data will be added to from main dictionary, for graphs
+    charge_cycle = []
+    capacity = []
+    soh = []
+    fullcapacity = 2
+
+    truecapacity = {}
+    time = []
+    ab = []
+
+    for i, column in x.items():
+        # added in the below to ensure it prints only when script run directly
+        # if __name__ == '__main__':
         # cycle number
         print('i (cycle no.): ', i)
 
@@ -86,30 +87,39 @@ for i, column in x.items():
         print('Total capacity: ', sum(truecapacity.values()))
         ab.append(sum(truecapacity.values()) / fullcapacity)
 
-## apply below if below 50% SOH
-while True:
-    try:
-        ignore = np.array(ab)
-        result = next(k for k, value in enumerate(ab) if value < 0.5)
-        print('index is: ', result)
-        print('value is: ', ab[result])
-        print('length of ab before: ', len(ab))
-        del ab[result]
-        del charge_cycle[result]
-        print('length of ab after: ', len(ab))
-        print('length of charge cycle after: ', len(charge_cycle))
-    except StopIteration:
-        break
+    ## apply below if below 50% SOH - removing anomalies
+    while True:
+        try:
+            ignore = np.array(ab)
+            result = next(k for k, value in enumerate(ab) if value < 0.5)
+            print('index is: ', result)
+            print('value is: ', ab[result])
+            print('length of ab before: ', len(ab))
+            del ab[result]
+            del charge_cycle[result]
+            print('length of ab after: ', len(ab))
+            print('length of charge cycle after: ', len(charge_cycle))
+        except StopIteration:
+            break
+
+    # remove index 11 (cycle 12) as it is an anomaly
+    # del ab[60]
+    # del charge_cycle[60]
 
 
+    print(ab)
 
-print(ab)
+    ax = plt.plot(charge_cycle, ab)
+    plt.xlabel('Cycle')
+    plt.ylabel('SOH (%)')
+    plt.show()
 
-ax = plt.plot(charge_cycle, ab)
-plt.xlabel('Cycle')
-plt.ylabel('SOH (%)')
-plt.show()
+    print('he')
 
+    return ab, charge_cycle
 
+    # return ab, charge_cycle
+# def sohcharge1():
+#     return ab, charge_cycle
 
 

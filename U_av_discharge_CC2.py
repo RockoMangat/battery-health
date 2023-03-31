@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 from pandas5v2 import load_df
 dfs = load_df()
 
+from sohdischarge import ab, charge_cycle
+
 def discharge_data(dataset):
 
     x = dfs[dataset]
@@ -66,4 +68,4 @@ def discharge_data(dataset):
     plt.ylabel('Average voltage of CC discharge process (V)')
     plt.show()
 
-    return av, cc
+    return av, cc, ab, charge_cycle

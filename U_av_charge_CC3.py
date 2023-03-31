@@ -8,10 +8,16 @@ import pickle
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
+from sohcharge import sohcharge1
 
 # import dataframes
 from pandas6 import load_df
 dfs = load_df()
+
+
+
+print('test')
+
 
 # Nearest value function
 def find_nearest(array, value):
@@ -21,6 +27,7 @@ def find_nearest(array, value):
 
 
 def charge_data(dataset):
+    ab, charge_cycle = sohcharge1()
 
     # number of dataset using - 0,1,2 for 3 battery datasets
 
@@ -151,5 +158,5 @@ def charge_data(dataset):
     plt.show()
 
     # return average charge voltage, charge time, fixed time and cycles used for
-    return av, nd, fixedtime, cc
+    return av, nd, fixedtime, cc, ab, charge_cycle
 

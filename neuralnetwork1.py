@@ -1,16 +1,22 @@
 import torch
 import torch.nn as nn
 import numpy as np
+import pickle
 import matplotlib.pyplot as plt
 import pandas as pd
-import sklearn
-
 from sklearn.model_selection import train_test_split
 
-# import dataframes
-from pandas5v2 import load_df
-dfs = load_df()
+# import dataframes from main
+with open('frames.pkl', 'rb') as handle:
+    frames = pickle.load(handle)
 
+df1 = frames[0]
+df2 = frames[1]
+df3 = frames[2]
+
+
+
+print(frames)
 def nn1(X,Y):
 
     X = np.arange(20).reshape(-1, 1)

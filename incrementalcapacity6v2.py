@@ -14,6 +14,8 @@ from sklearn.preprocessing import MinMaxScaler
 from pandas5v2 import load_df
 dfs = load_df()
 
+from sohdischarge import sohdischarge
+
 # Nearest value function
 def find_nearest(array, value):
     array = np.asarray(array)
@@ -21,6 +23,8 @@ def find_nearest(array, value):
     return array[idx]
 
 def ica_data(dataset):
+    ab, charge_cycle = sohdischarge()
+
     # import dataframes
     from pandas5v2 import load_df
     dfs = load_df()
@@ -327,6 +331,6 @@ def ica_data(dataset):
 
 
 
-    return nd3, nd4, cycles_to_loop
+    return nd3, nd4, cycles_to_loop, ab, charge_cycle
 
 
