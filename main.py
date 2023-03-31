@@ -51,15 +51,15 @@ print('hello')
 # df1 = pd.DataFrame(list(zip(av_volt_charge, charge_time_normalised, volt_fixedtime)), index=cycles1)
 df1 = pd.DataFrame(list(zip(av_volt_charge, charge_time_normalised, volt_fixedtime, soh1_cycles, soh1)))
 
-# df1.columns = ['Av volt charge', 'Charge time', 'Voltage fixedtime']
+df1.columns = ['Av volt charge', 'Charge time', 'Voltage fixedtime', 'SOH charge cycles', 'SOH charge']
 
 # df2 = pd.DataFrame(list(zip(maxica, peakvoltage)), index=cycles2)
 df2 = pd.DataFrame(list(zip(maxica, peakvoltage, soh2_cycles, soh2)))
-# df2.columns = ['Max ICA', 'Peak voltage']
+df2.columns = ['Max ICA', 'Peak voltage', 'SOH discharge cycles', 'SOH discharge']
 
 # df3 = pd.DataFrame(list(zip(av_volt_discharge)), index=cycles3)
 df3 = pd.DataFrame(list(zip(av_volt_discharge, soh2_cycles, soh2)))
-# df3.columns = ['Av volt discharge']
+df3.columns = ['Av volt discharge', 'SOH discharge cycles 2', 'SOH discharge 2']
 
 frames = [df1, df2, df3]
 # dfcomb = pd.concat(frames, axis=1)

@@ -14,7 +14,9 @@ df1 = frames[0]
 df2 = frames[1]
 df3 = frames[2]
 
+allframes = [df1, df2, df3]
 
+dfcomb = pd.concat(allframes, axis=1)
 
 print(frames)
 def nn1(X,Y):
