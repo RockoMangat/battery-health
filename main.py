@@ -6,7 +6,6 @@ from sohcharge import sohcharge1
 from U_av_charge_CC3 import charge_data
 from U_av_discharge_CC2 import discharge_data
 from incrementalcapacity6v2 import ica_data
-from neuralnetwork1 import nn1
 
 # select dataset: 0, 1 or 2
 datasetno = 0
