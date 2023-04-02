@@ -103,46 +103,33 @@ for batch, (X, y) in enumerate(train_dataloader):
 
 # Training model test:
 num_epochs = 300
-loss_values = []
+training_losses = []
+validation_losses = []
 
 for epoch in range(num_epochs):
+    batch_loss = []
+    # training losses:
     for X, y in train_dataloader:
-        # zero the parameter gradients
         optimizer.zero_grad()
-
-        # forward + backward + optimise
         pred = my_module(X)
         loss = loss_fn(pred, y)
-        loss_values.append(loss.item())
+        batch_loss.append(loss.item())
         loss.backward()
         optimizer.step()
-
-
-step = np.linspace(0, 1200, num=1200)
-
-# plt.plot(pred)
-plt.figure(2)
-plt.plot(step, np.array(loss_values))
-plt.title("Step-wise Loss")
-plt.xlabel("Epochs")
-plt.ylabel("Loss")
-# plt.show()
-
-
+    training_loss = np.mean(batch_loss)
+    training_losses.append(training_loss)
 
 # Prediction and evaluation of NN:
 
-loss_values2 = []
-# step2 =
-
-for epoch in range(num_epochs):
     with torch.no_grad():
+        val_losses = []
         for X, y in test_dataloader:
             outputs = my_module(X)
-            loss2 = loss_fn(outputs, y)
-            loss_values2.append(loss2.item())
+            val_loss = loss_fn(outputs, y)
+            val_losses.append(val_loss.item())
+        validation_loss = np.mean(val_losses)
+        validation_losses.append(validation_loss)
+
+    print(f"[{epoch+1}] Training loss: {training_loss:.3f}\t Validation loss: {validation_loss:.3f}")
 
 
-plt.figure(3)
-# plt.plot(step2, np.array(loss_values2))
-plt.show()
