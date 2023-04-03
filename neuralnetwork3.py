@@ -1,3 +1,4 @@
+# combining all three datasets into one
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
@@ -7,37 +8,57 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-# import dataframes from main
-with open('frames.pkl', 'rb') as handle:
-    frames = pickle.load(handle)
+pklfiles = ['frames.pkl', 'frames2.pkl', 'frames3.pkl']
+frames = []
+
+for filename in pklfiles:
+    # import dataframes from main
+    with open(filename, 'rb') as handle:
+        frames1 = pickle.load(handle)
+
+    frames.append(frames1)
 
 # ------------------------- Sorting data input ------------------------- #
-df1 = frames[0]
-df2 = frames[1]
-df3 = frames[2]
+df1 = frames[0][0]
+df2 = frames[0][1]
+df3 = frames[0][2]
+df4 = frames[1][0]
+df5 = frames[1][1]
+df6 = frames[1][2]
+df7 = frames[2][0]
+df8 = frames[2][1]
+df9 = frames[2][2]
 
-allframes = [df1, df2, df3]
+frameset1 = [df1, df2, df3]
+frameset2 = [df4, df5, df6]
+frameset3 = [df7, df8, df9]
+
+allframes = [frameset1, frameset2, frameset3]
+dfcomb_final = pd.DataFrame()
 
 # combining all dataframes
-dfcomb = pd.concat(allframes, axis=1)
-print(dfcomb.shape)
+for frameset in allframes:
+    dfcomb = pd.concat(frameset, axis=1)
+    print(dfcomb.shape)
 
-dfcomb = dfcomb.drop(['SOH charge cycles', 'SOH discharge cycles', 'SOH discharge cycles 2', 'SOH discharge 2'], axis=1)
-print(dfcomb.shape)
+    dfcomb = dfcomb.drop(['SOH charge cycles', 'SOH discharge cycles', 'SOH discharge cycles 2', 'SOH discharge 2'], axis=1)
+    print(dfcomb.shape)
 
-# fixing issue of value stored as lists:
-dfcomb = dfcomb.applymap(lambda x: x[0] if isinstance(x, list) and len(x) == 1 else x)
+    # fixing issue of value stored as lists:
+    dfcomb = dfcomb.applymap(lambda x: x[0] if isinstance(x, list) and len(x) == 1 else x)
 
-# find average SOH for charge and discharge, then remove those 2 columns
-dfcomb['Average SOH'] = dfcomb[['SOH charge', 'SOH discharge']].mean(axis=1)
-dfcomb = dfcomb.drop(['SOH charge', 'SOH discharge'], axis=1)
+    # find average SOH for charge and discharge, then remove those 2 columns
+    dfcomb['Average SOH'] = dfcomb[['SOH charge', 'SOH discharge']].mean(axis=1)
+    dfcomb = dfcomb.drop(['SOH charge', 'SOH discharge'], axis=1)
+
+    dfcomb_final = pd.concat([dfcomb, dfcomb_final], axis=0)
 
 
 # get the x and y data:
-X = dfcomb.drop('Average SOH', axis=1)
+X = dfcomb_final.drop('Average SOH', axis=1)
 print(X.shape)
 
-y = dfcomb['Average SOH']
+y = dfcomb_final['Average SOH']
 print(y.shape)
 
 # Split data into x and y, with 30% for testing and randomly shuffling data
@@ -124,29 +145,38 @@ for epoch in range(num_epochs):
 
     # Validation:
 
+    val_results = []
+    cycle_numbers = []
+
     with torch.no_grad():
         val_losses = []
-        yy = []
         model.eval()
         for X, y in test_dataloader:
             outputs = model(X)
-            yy.append(outputs.numpy())
+            val_results.append(outputs.numpy())
+            cycle_numbers.append(X[:, 0].numpy())
             val_loss = loss_fn(outputs, y)
             val_losses.append(val_loss.item())
         validation_loss = np.mean(val_losses)
         validation_losses.append(validation_loss)
 
-        val_results.append(yy)
+    val_results = np.concatenate(val_results, axis=0)
+    cycle_numbers = np.concatenate(cycle_numbers, axis=0)
 
     print(f"[{epoch+1}] Training loss: {training_loss:.3f}\t Validation loss: {validation_loss:.3f}")
 
+plt.figure(1)
 plt.plot(training_losses, label='Training Loss')
 plt.plot(validation_losses, label='Validation Loss')
 plt.xlabel('Epochs')
 plt.ylabel('Loss')
 plt.legend()
-plt.show()
 
+plt.figure(2)
+plt.plot(cycle_numbers, val_results, label='Predicted SOH')
+plt.xlabel('Cycle Number')
+plt.ylabel('Predicted SOH')
+plt.show()
 
 
 
