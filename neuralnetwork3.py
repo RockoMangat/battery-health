@@ -53,6 +53,19 @@ for frameset in allframes:
 
     dfcomb_final = pd.concat([dfcomb, dfcomb_final], axis=0)
 
+# remove NaNs from the whole dataset:
+print('Shape before:', dfcomb_final.shape)
+# dfcomb_final.dropna()
+# dfcomb_final = dfcomb_final[dfcomb_final.notna()]
+# dfcomb_final = [dfcomb_final.notna()]
+dfcomb_final = dfcomb_final.dropna(axis=0, how='any')
+
+
+print('No. NaN values: ', dfcomb_final.isnull().sum().sum())
+print('Shape after:', dfcomb_final.shape)
+
+
+
 
 # get the x and y data:
 X = dfcomb_final.drop('Average SOH', axis=1)
@@ -93,6 +106,7 @@ model = MyModule(num_inputs=6, num_outputs=1, hidden_size=19)
 
 # criterion = torch.nn.MSELoss(size_average=False)
 loss_fn = torch.nn.MSELoss()
+
 # optimizer = torch.optim.SGD(model.parameters(), lr=1e-4)
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
