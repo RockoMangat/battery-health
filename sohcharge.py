@@ -13,13 +13,13 @@ dfs_dis = load_df()
 from pandas6 import load_df
 dfs_cha = load_df()
 # ----------------------------------- #
-def sohcharge1():
+def sohcharge1(dataset):
 
 
     # choosing charge
     dfs = dfs_cha
-    # choosing first dataset - B0005
-    x = dfs[0]
+    # choosing  dataset
+    x = dfs[dataset]
 
 
     # create new empty lists which data will be added to from main dictionary, for graphs

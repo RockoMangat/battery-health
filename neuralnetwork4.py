@@ -1,4 +1,4 @@
-# combining all three datasets into one
+# same as neuralnetwork3 but including normalisation of the input data to fix accuracy issue
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
@@ -7,6 +7,7 @@ import pickle
 import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
 
 pklfiles = ['frames.pkl', 'frames2.pkl', 'frames3.pkl']
 frames = []
@@ -62,6 +63,22 @@ dfcomb_final = dfcomb_final.dropna(axis=0, how='any')
 
 print('Shape after:', dfcomb_final.shape)
 
+# saving dataframe to use to plot at end of script:
+with open('dfcomb_final.pkl', 'wb') as handle:
+    pickle.dump(dfcomb_final, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+
+
+# normalising data:
+scaler = MinMaxScaler()
+
+col_names = list(dfcomb_final.columns)
+row_num = list(dfcomb_final.index)
+
+dfcomb_final_scaled = scaler.fit_transform(dfcomb_final.to_numpy())
+dfcomb_final = pd.DataFrame(dfcomb_final_scaled, columns=col_names, index=row_num)
+
+
 
 
 
@@ -90,11 +107,15 @@ class MyModule (nn.Module):
         self.dropout = nn.Dropout(0.2)
         self.linear2 = nn.Linear(hidden_size, num_outputs)
 
+        self.activation = nn.ReLU()
+
     # Forward pass
     def forward(self, input):
         input = self.dropout(input)
         lin = self.linear1(input)
-        output = nn.functional.sigmoid(lin)
+        # output = nn.functional.sigmoid(lin)
+        output = self.activation(lin)
+
         pred = self.linear2(output)
         return pred
 
@@ -109,15 +130,13 @@ model = MyModule(num_inputs=6, num_outputs=1, hidden_size=19)
 # criterion = torch.nn.MSELoss(size_average=False)
 loss_fn = torch.nn.MSELoss()
 
-optimizer = torch.optim.SGD(model.parameters(), lr=1e-4)
-# optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
+# optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
 
 # convert to pytorch tensors:
 
 # convert X_train and X_test to numpy arrays
-# X_train_np = X_train.to_numpy(dtype=np.float32)
-# X_test_np = X_test.to_numpy(dtype=np.float32)
 
 X_train_tensor = torch.tensor(X_train.values, dtype=torch.float32)
 X_test_tensor = torch.tensor(X_test.values, dtype=torch.float32)
@@ -125,11 +144,13 @@ y_train_tensor = torch.tensor(y_train.values, dtype=torch.float32).reshape(-1, 1
 y_test_tensor = torch.tensor(y_test.values, dtype=torch.float32).reshape(-1, 1)
 
 # training and test data
-# train_data = (X_train_tensor, y_train_tensor)
 train_dataloader = DataLoader(list(zip(X_train_tensor, y_train_tensor)), batch_size=32)
+# train_dataloader = DataLoader(list(zip(X_train_tensor, y_train_tensor)), batch_size=32, shuffle=True)
 
-# test_data = (X_test_tensor, y_test_tensor)
+
 test_dataloader = DataLoader(list(zip(X_test_tensor, y_test_tensor)), batch_size=32)
+# test_dataloader = DataLoader(list(zip(X_test_tensor, y_test_tensor)), batch_size=32, shuffle=True)
+
 
 # Check it's working
 for batch, (X, y) in enumerate(train_dataloader):
@@ -189,32 +210,37 @@ plt.ylabel('Loss')
 plt.legend()
 
 # Plot predicted values against cycle number
-print(X_test.index, val_results)
+
+# get the inverse scaler first:
+
+# Get the scaling range for the final column of dfcomb_final
+soh_range = scaler.data_range_[-1]
+soh_min = scaler.data_min_[-1]
+
+# Unnormalize val_results
+unnormalized_val_results = val_results * soh_range + soh_min
+
+
+
+print(X_test.index, unnormalized_val_results)
 plt.figure(2)
 # plt.plot(X_test.index, val_results, label='Predicted SOH')
-plt.scatter(X_test.index, val_results, label='Predicted SOH')
+plt.scatter(X_test.index, unnormalized_val_results, label='Predicted SOH')
 plt.xlabel('Cycle Number')
 plt.ylabel('SOH')
 plt.legend()
+
+
+# plot true results on same graph:
+with open('dfcomb_final.pkl', 'rb') as handle:
+    dfcomb_final = pickle.load(handle)
+
+
+plt.scatter(dfcomb_final.index, dfcomb_final['Average SOH'], label='True SOH')
+plt.legend()
+
 plt.show()
 
-
-
-# plt.figure()
-# test_output = outputs.detach().numpy()
-# plt.plot(outputs.detach().numpy(), label='predicted')
-# # plt.plot(pred.detach().numpy(), label='predicted')
-# plt.plot(y_train, label='actual')
-# plt.legend()
-# plt.show()
-
-
-# plt.figure(1)
-# plt.plot(np.array(loss_values))
-# plt.title("Step-wise Loss")
-# plt.xlabel("Epochs")
-# plt.ylabel("Loss")
-
-
+# dfcomb = pd.concat(frameset, axis=1)
 
 print('hello')

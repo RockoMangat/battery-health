@@ -8,7 +8,7 @@ from U_av_discharge_CC2 import discharge_data
 from incrementalcapacity6v2 import ica_data
 
 # select dataset: 0, 1 or 2
-datasetno = 0
+datasetno = 3
 
 # ------------------ Get the av charge voltage ------------------ #
 # sohcharge = sohcharge1()
@@ -69,7 +69,7 @@ frames = [df1, df2, df3]
 # Neural network tests:
 # test1 = nn1(X, Y)
 
-with open('frames.pkl', 'wb') as handle:
+with open('frames4.pkl', 'wb') as handle:
     pickle.dump(frames, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 print('hello')

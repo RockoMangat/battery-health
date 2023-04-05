@@ -23,7 +23,7 @@ def find_nearest(array, value):
     return array[idx]
 
 def ica_data(dataset):
-    ab, charge_cycle = sohdischarge()
+    ab, charge_cycle = sohdischarge(dataset)
 
     # import dataframes
     from pandas5v2 import load_df

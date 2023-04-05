@@ -2,16 +2,13 @@
 # SIMILAR TO pandas5 BUT USING CHARGING DATA
 
 import pandas as pd
-import pickle
-import matplotlib.pyplot as plt
 import numpy as np
-
 
 # import data from other file
 from cleandata6test import all_discharge, all_charge, all_impedance
 
 # number of dataset using - 0,1,2 for 3 battery datasets
-dataset = [0,1,2]
+dataset = [0, 1, 2, 3]
 
 # create an empty dictionary to store the DataFrames
 dfs = {}

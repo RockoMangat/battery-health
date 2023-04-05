@@ -12,7 +12,7 @@ import numpy as np
 from cleandata6test import all_discharge, all_charge, all_impedance
 
 # number of dataset using - 0,1,2 for 3 battery datasets
-dataset = [0,1,2]
+dataset = [0, 1, 2]
 
 # create an empty dictionary to store the DataFrames
 dfs = {}
@@ -66,4 +66,7 @@ if __name__ == '__main__':
 
 
 def load_df():
+    print('test')
     return dfs
+
+print('TEST')

@@ -27,7 +27,7 @@ def find_nearest(array, value):
 
 
 def charge_data(dataset):
-    ab, charge_cycle = sohcharge1()
+    ab, charge_cycle = sohcharge1(dataset)
 
     # number of dataset using - 0,1,2 for 3 battery datasets
 

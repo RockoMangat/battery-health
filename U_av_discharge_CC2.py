@@ -7,9 +7,10 @@ import matplotlib.pyplot as plt
 from pandas5v2 import load_df
 dfs = load_df()
 
-from sohdischarge import ab, charge_cycle
+from sohdischarge import sohdischarge
 
 def discharge_data(dataset):
+    ab, charge_cycle = sohdischarge(dataset)
 
     x = dfs[dataset]
     print(x)

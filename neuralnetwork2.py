@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-# import dataframes from main
+# import dataframes from main - CHOOSE DATASET BASED ON NUMBER AFTER FRAMES
 with open('frames.pkl', 'rb') as handle:
     frames = pickle.load(handle)
 
@@ -47,6 +47,7 @@ print('yeee')
 
 
 # ------------------------- Neural network ------------------------- #
+torch.manual_seed(0)
 
 class MyModule (nn.Module):
     # Initialize the parameter
@@ -124,28 +125,43 @@ for epoch in range(num_epochs):
 
     # Validation:
 
+    val_results = []
+
     with torch.no_grad():
         val_losses = []
-        yy = []
         model.eval()
         for X, y in test_dataloader:
             outputs = model(X)
-            yy.append(outputs.numpy())
+            val_results.append(outputs.numpy())
             val_loss = loss_fn(outputs, y)
             val_losses.append(val_loss.item())
         validation_loss = np.mean(val_losses)
         validation_losses.append(validation_loss)
 
-        val_results.append(yy)
+    val_results = np.concatenate(val_results, axis=0)
 
     print(f"[{epoch+1}] Training loss: {training_loss:.3f}\t Validation loss: {validation_loss:.3f}")
 
+plt.figure(1)
 plt.plot(training_losses, label='Training Loss')
 plt.plot(validation_losses, label='Validation Loss')
 plt.xlabel('Epochs')
 plt.ylabel('Loss')
 plt.legend()
+
+# Plot predicted values against cycle number
+print(X_test.index, val_results)
+plt.figure(2)
+# plt.plot(X_test.index, val_results, label='Predicted SOH')
+plt.scatter(X_test.index, val_results, label='Predicted SOH')
+# plt.plot(X_test.index, val_results)
+# X_Y_Spline = scipy.interpolate.make_interp_spline(x, y)
+plt.xlabel('Cycle Number')
+plt.ylabel('SOH')
+plt.legend()
 plt.show()
+
+
 
 
 
