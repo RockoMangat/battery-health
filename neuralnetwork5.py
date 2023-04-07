@@ -142,8 +142,8 @@ model = MyModule(num_inputs=6, num_outputs=1, hidden_size=19)
 # criterion = torch.nn.MSELoss(size_average=False)
 loss_fn = torch.nn.MSELoss()
 
-optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
-# optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
+# optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
 
 # convert to pytorch tensors:
