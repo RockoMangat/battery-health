@@ -1,6 +1,6 @@
-# same as neuralnetwork4
-# train with datasets 5 and 6, test on 7 only
-# approach: same as neuralnetwork4 but remove last n rows of whole dataset which belong to dataset 7 and make that as X and Y for train_test split
+# same as neuralnetwork6
+# train with datasets 5, 6 and 7, test on 18 only
+# use LSTM model
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
@@ -12,7 +12,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 
 # pklfiles = ['frames.pkl', 'frames2.pkl', 'frames3.pkl']
-pklfiles = ['test1.pkl', 'test2.pkl', 'test3.pkl']
+pklfiles = ['test1.pkl', 'test2.pkl', 'test3.pkl', 'test4.pkl']
 frames = []
 
 for filename in pklfiles:
@@ -32,12 +32,16 @@ df6 = frames[1][2]
 df7 = frames[2][0]
 df8 = frames[2][1]
 df9 = frames[2][2]
+df10 = frames[3][0]
+df11 = frames[3][1]
+df12 = frames[3][2]
 
 frameset1 = [df1, df2, df3]
 frameset2 = [df4, df5, df6]
 frameset3 = [df7, df8, df9]
+frameset4 = [df10, df11, df12]
 
-allframes = [frameset1, frameset2, frameset3]
+allframes = [frameset1, frameset2, frameset3, frameset4]
 dfcomb_final = pd.DataFrame()
 
 # combining all dataframes
@@ -87,7 +91,7 @@ dfcomb_final = pd.DataFrame(dfcomb_final_scaled, columns=col_names, index=row_nu
 
 #                                               get the x and y data:
 
-# get two different dataframes and randomise order of rows
+# get three different dataframes and randomise order of rows
 df_training = dfcomb_final[:-167]
 df_test = dfcomb_final.tail(167)
 
@@ -111,30 +115,62 @@ print('yeee')
 # ------------------------- Neural network ------------------------- #
 torch.manual_seed(0)
 
-class MyModule (nn.Module):
-    # Initialize the parameter
-    def __init__(self, num_inputs, num_outputs, hidden_size):
+class MyModule(nn.Module):
+    # Initialize the parameters
+    def __init__(self, num_inputs, num_outputs, hidden_size, num_layers):
         super(MyModule, self).__init__()
-        self.dropout = nn.Dropout(0.2)
-        self.linear1 = nn.Linear(num_inputs, hidden_size)
-        self.dropout = nn.Dropout(0.2)
-        self.linear2 = nn.Linear(hidden_size, num_outputs)
+        self.num_layers = num_layers
+        self.hidden_size = hidden_size
 
+
+        self.lstm = nn.LSTM(num_inputs, hidden_size, num_layers, batch_first=True)
+        self.dropout = nn.Dropout(0.2)
+        # self.fc1 = nn.Linear(hidden_size, num_outputs)
+        self.fc1 = nn.Linear(hidden_size, hidden_size)
+
+        self.fc2 = nn.Linear(hidden_size, num_outputs)
         self.activation = nn.ReLU()
+        self.linear = nn.Linear(hidden_size, num_outputs)
 
     # Forward pass
     def forward(self, input):
-        input = self.dropout(input)
-        lin = self.linear1(input)
-        # output = nn.functional.sigmoid(lin)
-        output = self.activation(lin)
+        h_0 = torch.zeros(self.num_layers, input.size(0), self.hidden_size)  # hidden state
+        c_0 = torch.zeros(self.num_layers, input.size(0), self.hidden_size)  # internal state
 
-        pred = self.linear2(output)
+        # Propagate input through LSTM
+        output, (hn, cn) = self.lstm(input, (h_0, c_0))  # lstm with input, hidden, and internal state
+        # hn = hn.view(-1, self.hidden_size)  # reshaping the data for Dense layer next
+
+        # print("Output shape:", output.shape)
+        # print("hn shape:", hn.shape)
+        # print("cn shape:", cn.shape)
+
+        # pred = self.activation(output)
+        # pred = self.fc(pred)  # first Dense
+        # pred = self.activation(pred)  # relu
+        # # pred = self.fc(pred[:, -1, :])  # Final Output
+        # # pred = self.fc(pred)
+        # pred = self.linear(pred)
+
+        #  ---------------------- ATTEMPT 2
+
+        pred = self.dropout(output.contiguous().view(output.shape[0], -1)) # Flatten lstm out
+        pred = self.fc2(pred)
+        pred = self.activation(pred)
+        # pred = self.fc2(pred)
+
+        pred = self.fc2(pred[:, -1, :])
+
+
+
+
+
         return pred
+
 
 # Instantiate the custom module
 # 6 inputs (from the features), one output (SOH) and hidden size is 19 neurons
-model = MyModule(num_inputs=6, num_outputs=1, hidden_size=19)
+model = MyModule(num_inputs=6, num_outputs=1, hidden_size=100, num_layers=1)
 
 # Construct our loss function and an Optimizer. The call to model.parameters()
 # in the SGD constructor will contain the learnable parameters of the two
@@ -144,7 +180,7 @@ model = MyModule(num_inputs=6, num_outputs=1, hidden_size=19)
 loss_fn = torch.nn.MSELoss()
 
 # optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-5)
 
 
 # convert to pytorch tensors:
@@ -156,12 +192,21 @@ X_test_tensor = torch.tensor(X_test.values, dtype=torch.float32)
 y_train_tensor = torch.tensor(y_train.values, dtype=torch.float32).reshape(-1, 1)
 y_test_tensor = torch.tensor(y_test.values, dtype=torch.float32).reshape(-1, 1)
 
+
+
+# adding another dimension for LSTM model:
+X_train_tensor = torch.reshape(X_train_tensor,   (X_train_tensor.shape[0], 1, X_train_tensor.shape[1]))
+
+X_test_tensor = torch.reshape(X_test_tensor,  (X_test_tensor.shape[0], 1, X_test_tensor.shape[1]))
+
+
+
 # training and test data
-train_dataloader = DataLoader(list(zip(X_train_tensor, y_train_tensor)), batch_size=32)
+train_dataloader = DataLoader(list(zip(X_train_tensor, y_train_tensor)), batch_size=100)
 # train_dataloader = DataLoader(list(zip(X_train_tensor, y_train_tensor)), batch_size=32, shuffle=True)
 
 
-test_dataloader = DataLoader(list(zip(X_test_tensor, y_test_tensor)), batch_size=32)
+test_dataloader = DataLoader(list(zip(X_test_tensor, y_test_tensor)), batch_size=100)
 # test_dataloader = DataLoader(list(zip(X_test_tensor, y_test_tensor)), batch_size=32, shuffle=True)
 
 

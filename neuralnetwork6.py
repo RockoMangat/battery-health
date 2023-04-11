@@ -1,6 +1,6 @@
 # same as neuralnetwork4
-# train with datasets 5 and 6, test on 7 only
-# approach: same as neuralnetwork4 but remove last n rows of whole dataset which belong to dataset 7 and make that as X and Y for train_test split
+# train with datasets 5, 6 and 7, test on 18 only
+# approach: same as neuralnetwork4 but remove last n rows of whole dataset which belong to dataset 18 and make that as X and Y for train_test split
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
@@ -12,7 +12,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 
 # pklfiles = ['frames.pkl', 'frames2.pkl', 'frames3.pkl']
-pklfiles = ['test1.pkl', 'test2.pkl', 'test3.pkl']
+pklfiles = ['test1.pkl', 'test2.pkl', 'test3.pkl', 'test4.pkl']
 frames = []
 
 for filename in pklfiles:
@@ -32,12 +32,16 @@ df6 = frames[1][2]
 df7 = frames[2][0]
 df8 = frames[2][1]
 df9 = frames[2][2]
+df10 = frames[3][0]
+df11 = frames[3][1]
+df12 = frames[3][2]
 
 frameset1 = [df1, df2, df3]
 frameset2 = [df4, df5, df6]
 frameset3 = [df7, df8, df9]
+frameset4 = [df10, df11, df12]
 
-allframes = [frameset1, frameset2, frameset3]
+allframes = [frameset1, frameset2, frameset3, frameset4]
 dfcomb_final = pd.DataFrame()
 
 # combining all dataframes
@@ -87,7 +91,7 @@ dfcomb_final = pd.DataFrame(dfcomb_final_scaled, columns=col_names, index=row_nu
 
 #                                               get the x and y data:
 
-# get two different dataframes and randomise order of rows
+# get three different dataframes and randomise order of rows
 df_training = dfcomb_final[:-167]
 df_test = dfcomb_final.tail(167)
 
@@ -111,30 +115,35 @@ print('yeee')
 # ------------------------- Neural network ------------------------- #
 torch.manual_seed(0)
 
-class MyModule (nn.Module):
-    # Initialize the parameter
+class MyModule(nn.Module):
+    # Initialize the parameters
     def __init__(self, num_inputs, num_outputs, hidden_size):
         super(MyModule, self).__init__()
-        self.dropout = nn.Dropout(0.2)
+        self.dropout = nn.Dropout(0.25)
         self.linear1 = nn.Linear(num_inputs, hidden_size)
-        self.dropout = nn.Dropout(0.2)
-        self.linear2 = nn.Linear(hidden_size, num_outputs)
+        self.linear2 = nn.Linear(hidden_size, hidden_size)
+        self.linear3 = nn.Linear(hidden_size, num_outputs)
 
         self.activation = nn.ReLU()
 
     # Forward pass
     def forward(self, input):
         input = self.dropout(input)
-        lin = self.linear1(input)
-        # output = nn.functional.sigmoid(lin)
-        output = self.activation(lin)
+        lin1 = self.linear1(input)
+        output1 = self.activation(lin1)
+        output1 = self.dropout(output1)
 
-        pred = self.linear2(output)
+        lin2 = self.linear2(output1)
+        output2 = self.activation(lin2)
+        output2 = self.dropout(output2)
+
+        pred = self.linear3(output2)
         return pred
+
 
 # Instantiate the custom module
 # 6 inputs (from the features), one output (SOH) and hidden size is 19 neurons
-model = MyModule(num_inputs=6, num_outputs=1, hidden_size=19)
+model = MyModule(num_inputs=6, num_outputs=1, hidden_size=100)
 
 # Construct our loss function and an Optimizer. The call to model.parameters()
 # in the SGD constructor will contain the learnable parameters of the two
@@ -144,7 +153,7 @@ model = MyModule(num_inputs=6, num_outputs=1, hidden_size=19)
 loss_fn = torch.nn.MSELoss()
 
 # optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-5)
 
 
 # convert to pytorch tensors:

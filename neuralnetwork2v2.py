@@ -12,7 +12,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 
 # import dataframes from main - CHOOSE DATASET BASED ON NUMBER AFTER FRAMES
-with open('frames3.pkl', 'rb') as handle:
+with open('test4.pkl', 'rb') as handle:
     frames = pickle.load(handle)
 
 # ------------------------- Sorting data input ------------------------- #
@@ -185,7 +185,7 @@ plt.plot(training_losses, label='Training Loss')
 plt.plot(validation_losses, label='Validation Loss')
 plt.xlabel('Epochs')
 plt.ylabel('Loss')
-plt.title('Battery B0007')
+# plt.title('Battery B0007')
 plt.legend()
 
 
@@ -213,7 +213,7 @@ plt.legend()
 
 # plot true results on same graph:
 plt.scatter(dfcomb.index, dfcomb['Average SOH'], label='True SOH')
-plt.title('Battery B0007')
+# plt.title('Battery B0007')
 plt.legend()
 
 

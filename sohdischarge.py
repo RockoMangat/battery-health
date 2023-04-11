@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 from pandas5v2 import load_df
 dfs_dis = load_df()
 
-from pandas6 import load_df
-dfs_cha = load_df()
+# from pandas6 import load_df
+# dfs_cha = load_df()
 # ----------------------------------- #
 
 def sohdischarge(dataset):
